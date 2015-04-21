@@ -1,5 +1,6 @@
 package gameclient;
 
+import gamecore.GlobalConstants;
 import gamecore.IGameClient;
 import gamecore.IGameServer;
 import java.rmi.registry.LocateRegistry;
@@ -13,8 +14,8 @@ public class ClientStarter {
         GameClient client = new GameClient();
  
         try {
-            Registry registry = LocateRegistry.getRegistry(null, 12345);
-            IGameServer server = (IGameServer)registry.lookup("GameService");
+            Registry registry = LocateRegistry.getRegistry(null, GlobalConstants.serverPort);
+            IGameServer server = (IGameServer)registry.lookup(GlobalConstants.serviceName);
  
             IGameClient stub = (IGameClient)UnicastRemoteObject.exportObject(client, 0);
             
