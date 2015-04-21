@@ -6,7 +6,7 @@ import java.util.UUID;
 
 public interface IGameServer extends Remote {
     
-    public UUID RegisterClient(String playerName) throws RemoteException;
+    public UUID RegisterClient(IGameClient clientCallback, String playerName) throws RemoteException;
     public void DropClient(UUID playerID) throws RemoteException;
     public void SendRequestForGame(UUID senderID, String rivalName) throws RemoteException;
     String[] GetPlayersList(UUID senderID) throws RemoteException;

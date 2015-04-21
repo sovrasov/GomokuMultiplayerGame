@@ -2,7 +2,10 @@ package gamecore;
 
 public class GomokuGame {
 
-    
+    public GomokuGame()
+    {
+            
+    }
     
     
     private GameField field;
