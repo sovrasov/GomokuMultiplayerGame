@@ -10,6 +10,5 @@ public interface IGameServer extends Remote {
     public void DropClient(UUID playerID) throws RemoteException;
     public void SendRequestForGame(UUID senderID, String rivalName) throws RemoteException;
     String[] GetPlayersList(UUID senderID) throws RemoteException;
-    void MakeMove(UUID playerID, int i, int j) throws RemoteException;
-    
+    void MakeMove(UUID playerID, GameFieldCoordinates coordinates) throws RemoteException;
 }

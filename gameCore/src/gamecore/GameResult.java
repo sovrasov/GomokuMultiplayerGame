@@ -2,5 +2,5 @@ package gamecore;
 
 public enum GameResult
 {
-    WIN, LOOSE
+    WIN, LOOSE, RIVAL_LEAVED
 }
