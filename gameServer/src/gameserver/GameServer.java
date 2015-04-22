@@ -4,7 +4,7 @@ import gamecore.*;
 import java.rmi.RemoteException;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.List;
+import java.util.LinkedList;
 import java.util.NoSuchElementException;
 import java.util.UUID;
 
@@ -12,8 +12,8 @@ public class GameServer implements IGameServer {
     
     public GameServer()
     {
-        playersList = new HashMap<UUID, Player>();
-        games = new List<GomokuGame>();
+        playersList = new HashMap<>();
+        games = new LinkedList<>();
     }
 
     @Override
@@ -130,6 +130,6 @@ public class GameServer implements IGameServer {
     }
     
     
-    private HashMap<UUID, Player> playersList;
-    private List<GomokuGame> games;
+    private final HashMap<UUID, Player> playersList;
+    private final LinkedList<GomokuGame> games;
 }
