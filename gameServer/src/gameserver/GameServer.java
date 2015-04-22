@@ -24,7 +24,8 @@ public class GameServer implements IGameServer {
                 && CheckIsUsernameUnique(playerName))
         {
             Player newPlayer = new Player(UUID.randomUUID(), playerName, clientCallback);
-            playersList.put(newPlayer.getID(), newPlayer);
+            BroadcastPlayersList();
+            playersList.put(newPlayer.getID(), newPlayer);   
             return newPlayer.getID();
         }
         else
@@ -55,15 +56,14 @@ public class GameServer implements IGameServer {
                     }
                     games.remove(game);
                     
-                    Player anotherPlayer = playersList.remove(anotherPlayerID);
-                    anotherPlayer.isBusy = false;
-                    playersList.put(anotherPlayer.getID(), anotherPlayer);
+                    ChangePlayerBusyStatus(anotherPlayerID);
                     
                     break;
                 }
             }  
             
             playersList.remove(playerID);
+            BroadcastPlayersList();
         }
         else
             throw new NoSuchElementException("ID is not found.");
@@ -78,7 +78,7 @@ public class GameServer implements IGameServer {
             if(rivalID != null)
             {
                 Player rival = playersList.get(rivalID);
-                Player   sender = playersList.get(senderID);
+                Player sender = playersList.get(senderID);
                 if(rival.isBusy)
                     sender.getCallback().OnRequestAnswered(false);
                 else
@@ -115,14 +115,14 @@ public class GameServer implements IGameServer {
     public void MakeMove(UUID playerID, GameFieldCoordinates coordinates) throws RemoteException {
         
         Iterator<GomokuGame> i = games.iterator();
-        boolean isGamefound = false;
+        boolean isGameFound = false;
         
         while(i.hasNext())
         {
             GomokuGame game = i.next();
             if(game.hasPlayer(playerID))
             {
-                isGamefound = true;
+                isGameFound = true;
                 game.MakeMove(coordinates, playerID);
                 if(game.getFirstPlayer().getID() == playerID)
                     game.getSecondPlayer().getCallback().OnRivalMoved(coordinates);
@@ -135,11 +135,15 @@ public class GameServer implements IGameServer {
                         game.getFirstPlayer().getCallback().OnGameFinished(GameResult.WIN);
                         game.getSecondPlayer().getCallback().OnGameFinished(GameResult.LOOSE);
                         games.remove(game);
+                        ChangePlayerBusyStatus(game.getFirstPlayer().getID());
+                        ChangePlayerBusyStatus(game.getSecondPlayer().getID());
                         break;
                     case secondWins:
                         game.getFirstPlayer().getCallback().OnGameFinished(GameResult.LOOSE);
                         game.getSecondPlayer().getCallback().OnGameFinished(GameResult.WIN);
                         games.remove(game);
+                        ChangePlayerBusyStatus(game.getFirstPlayer().getID());
+                        ChangePlayerBusyStatus(game.getSecondPlayer().getID());
                         break;
                     case inProcess:
                         break;
@@ -147,13 +151,13 @@ public class GameServer implements IGameServer {
             }
             break;
         }
-        if(!isGamefound)
+        if(!isGameFound)
             throw new NoSuchElementException("Game is not found.");
     } 
     
     private boolean CheckIsUsernameUnique(String uName)
     {
-        if(FindPlayerByName(uName) != null)
+        if(FindPlayerByName(uName) == null)
             return true;
         else
             return false;
@@ -167,6 +171,20 @@ public class GameServer implements IGameServer {
         }
         
         return null;
+    }
+    private void ChangePlayerBusyStatus(UUID playerID)
+    {
+        Player tmpPlayer = playersList.remove(playerID);
+        if(tmpPlayer != null)
+        {
+            tmpPlayer.isBusy = !tmpPlayer.isBusy;
+            playersList.put(tmpPlayer.getID(), tmpPlayer);
+        }
+    }
+    private void BroadcastPlayersList() throws RemoteException
+    {
+        for (Player value : playersList.values())
+           value.getCallback().RefreshPlayersList(this.GetPlayersList(null));
     }
     
     private final HashMap<UUID, Player> playersList;
