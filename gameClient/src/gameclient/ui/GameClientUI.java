@@ -8,7 +8,7 @@ public class GameClientUI {
     }
 
     public void showConnectionFrame() {
-        connectionFrame.setVisible(true);
+        connectionFrame.show();
     }
 
     public static void main(String args[]) {

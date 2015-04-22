@@ -3,25 +3,28 @@ package gameclient.ui;
 import javax.swing.JFrame;
 import java.awt.CardLayout;
 
-public class ConnectionFrame extends JFrame {
+public class ConnectionFrame extends GameClientView<JFrame> {
     public ConnectionFrame(GameClientController controller) {
-        this.controller = controller;
+        super(new JFrame(), controller);
         setupFrame();
 
         panes = new CardLayout();
-        this.setLayout(panes);
-        registrationPanel = new RegistrationPanel(controller);
-        this.add(registrationPanel);
+        getComponent().setLayout(panes);
+        registrationPanel = new RegistrationPanel(getController());
+        getComponent().add(registrationPanel.getComponent());
     }
+
+    public void show() {
+        getComponent().setVisible(true);
+    }
+
 
     private void setupFrame() {
-        this.setDefaultCloseOperation(EXIT_ON_CLOSE);
-        this.setSize(400, 300);
-        this.setTitle("Connect to Gomoku server");
+        getComponent().setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        getComponent().setSize(400, 300);
+        getComponent().setTitle("Connect to Gomoku server");
     }
 
-
-    private final GameClientController controller;
     private final CardLayout panes;
     private final RegistrationPanel registrationPanel;
 }
