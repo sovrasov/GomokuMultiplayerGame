@@ -101,14 +101,54 @@ public class GameServer implements IGameServer {
     @Override
     public String[] GetPlayersList(UUID senderID) throws RemoteException {
         
+        String[] usernamesArray = new String[playersList.size()];
         
-        
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        int i=0;
+        for (Player value : playersList.values()) {
+           usernamesArray[i] = value.getName();
+           i++;
+        }
+        return usernamesArray;
     }
 
     @Override
     public void MakeMove(UUID playerID, GameFieldCoordinates coordinates) throws RemoteException {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        
+        Iterator<GomokuGame> i = games.iterator();
+        boolean isGamefound = false;
+        
+        while(i.hasNext())
+        {
+            GomokuGame game = i.next();
+            if(game.hasPlayer(playerID))
+            {
+                isGamefound = true;
+                game.MakeMove(coordinates, playerID);
+                if(game.getFirstPlayer().getID() == playerID)
+                    game.getSecondPlayer().getCallback().OnRivalMoved(coordinates);
+                else
+                    game.getFirstPlayer().getCallback().OnRivalMoved(coordinates);
+                
+                switch(game.CheckGameStatus()) 
+                {
+                    case firstWins:
+                        game.getFirstPlayer().getCallback().OnGameFinished(GameResult.WIN);
+                        game.getSecondPlayer().getCallback().OnGameFinished(GameResult.LOOSE);
+                        games.remove(game);
+                        break;
+                    case secondWins:
+                        game.getFirstPlayer().getCallback().OnGameFinished(GameResult.LOOSE);
+                        game.getSecondPlayer().getCallback().OnGameFinished(GameResult.WIN);
+                        games.remove(game);
+                        break;
+                    case inProcess:
+                        break;
+                }
+            }
+            break;
+        }
+        if(!isGamefound)
+            throw new NoSuchElementException("Game is not found.");
     } 
     
     private boolean CheckIsUsernameUnique(String uName)
@@ -128,7 +168,6 @@ public class GameServer implements IGameServer {
         
         return null;
     }
-    
     
     private final HashMap<UUID, Player> playersList;
     private final LinkedList<GomokuGame> games;
