@@ -5,6 +5,7 @@ public class GameClientUI {
     public GameClientUI() {
         controller = new GameClientController();
         connectionFrame = new ConnectionFrame(controller);
+        controller.setAssociatedView(connectionFrame);
     }
 
     public void showConnectionFrame() {
