@@ -25,7 +25,8 @@ public class GameServer implements IGameServer {
         {
             Player newPlayer = new Player(UUID.randomUUID(), playerName, clientCallback);
             BroadcastPlayersList();
-            playersList.put(newPlayer.getID(), newPlayer);   
+            playersList.put(newPlayer.getID(), newPlayer);
+            System.out.println("\nPlayer joined: " + playerName);
             return newPlayer.getID();
         }
         else
@@ -61,7 +62,7 @@ public class GameServer implements IGameServer {
                     break;
                 }
             }  
-            
+            System.out.println("\nPlayer leaved: " + playersList.get(playerID).getName());
             playersList.remove(playerID);
             BroadcastPlayersList();
         }
@@ -87,9 +88,13 @@ public class GameServer implements IGameServer {
                     sender.getCallback().OnRequestAnswered(answer);
                     if(answer == true)
                     {
-                        sender.isBusy = rival.isBusy = true;
+                        //sender.isBusy = rival.isBusy = true;
+                        ChangePlayerBusyStatus(senderID);
+                        ChangePlayerBusyStatus(rivalID);
                         GomokuGame newGame = new GomokuGame(sender, rival);
                         games.add(newGame);
+                        System.out.println("\nGame started. Players: " + 
+                                sender.getName() + " and " + rivalName);
                     }
                 }
             }
@@ -137,6 +142,8 @@ public class GameServer implements IGameServer {
                         games.remove(game);
                         ChangePlayerBusyStatus(game.getFirstPlayer().getID());
                         ChangePlayerBusyStatus(game.getSecondPlayer().getID());
+                        System.out.println("\nGame finished. Player " + game.getFirstPlayer().getName()
+                        + " wins.");
                         break;
                     case secondWins:
                         game.getFirstPlayer().getCallback().OnGameFinished(GameResult.LOOSE);
@@ -144,6 +151,8 @@ public class GameServer implements IGameServer {
                         games.remove(game);
                         ChangePlayerBusyStatus(game.getFirstPlayer().getID());
                         ChangePlayerBusyStatus(game.getSecondPlayer().getID());
+                        System.out.println("\nGame finished. Player " + game.getSecondPlayer().getName()
+                        + " wins.");
                         break;
                     case inProcess:
                         break;
