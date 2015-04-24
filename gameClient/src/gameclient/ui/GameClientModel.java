@@ -29,8 +29,8 @@ public class GameClientModel extends Observable {
             clientStub = (IGameClient)UnicastRemoteObject.exportObject(
                 serviceClient, 0);
 
-            playerId = currentServer.RegisterClient(clientStub, playerName);
             this.playerName = playerName;
+            playerId = currentServer.RegisterClient(clientStub, playerName);
             setChanged();
             notifyObservers();
         } catch (RemoteException | NotBoundException e) {
@@ -66,13 +66,17 @@ public class GameClientModel extends Observable {
         return otherPlayersNamesList;
     }
 
-    public void invitePlayer(String nickname) {
+    public void invitePlayer(String opponentName) {
         try {
-            currentServer.SendRequestForGame(playerId, nickname);
+            currentServer.SendRequestForGame(playerId, opponentName);
         } catch (RemoteException ex) {
             System.out.println(
                 "Error while inviting opponent: " + ex.getMessage());
         }
+    }
+
+    public void startGameWith(String opponent) {
+
     }
 
     private final GameServiceClient serviceClient;

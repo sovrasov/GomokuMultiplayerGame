@@ -5,7 +5,7 @@ import gamecore.GameFieldCoordinates;
 import gamecore.GameResult;
 import gamecore.IGameClient;
 import java.rmi.RemoteException;
-import java.util.Arrays;
+import javax.swing.JOptionPane;
 
 public class GameServiceClient implements IGameClient {
     public GameServiceClient(GameClientModel model) {
@@ -32,9 +32,16 @@ public class GameServiceClient implements IGameClient {
 
     @Override
     public boolean OnSentGameRequest(String senderName) throws RemoteException {
-
         // return accept or decline game
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        boolean didAccept = JOptionPane.showConfirmDialog(null,
+            senderName + " invited you to play the game. Accept?",
+            "Game invitation", JOptionPane.YES_NO_OPTION) == 0;
+
+        if (didAccept) {
+            model.startGameWith(senderName);
+        }
+
+        return didAccept;
     }
 
     @Override
