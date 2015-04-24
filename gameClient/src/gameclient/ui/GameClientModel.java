@@ -22,6 +22,7 @@ public class GameClientModel extends Observable {
         playerId = null;
         playerName = null;
         otherPlayersNamesList = new String[0];
+        myTurn = false;
     }
 
     public void setController(GameClientController controller) {
@@ -86,9 +87,12 @@ public class GameClientModel extends Observable {
 
     public void startGameWith(String opponent) {
         controller.switchToGameRoundPanel();
+        setChanged();
+        notifyObservers();
     }
 
     public void startGameWithInvitee() {
+        myTurn = true;
         startGameWith(inviteeName);
     }
 
@@ -105,6 +109,10 @@ public class GameClientModel extends Observable {
 
     }
 
+    public boolean isMyTurn() {
+        return myTurn;
+    }
+
 
     private GameClientController controller;
 
@@ -115,4 +123,6 @@ public class GameClientModel extends Observable {
     private String playerName;
     private String inviteeName;
     private String[] otherPlayersNamesList;
+
+    private boolean myTurn;
 }

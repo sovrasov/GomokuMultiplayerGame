@@ -73,6 +73,14 @@ public class GameClientController {
         }
     }
 
+    public class MakeAMoveListener implements ActionListener {
+
+        @Override
+        public void actionPerformed(ActionEvent ae) {
+            
+        }
+    }
+
     private GameClientModel model;
     private ConnectionFrame mainView;
 }
