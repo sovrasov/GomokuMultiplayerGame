@@ -11,6 +11,8 @@ import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.Observable;
 import java.util.UUID;
+import javax.swing.JOptionPane;
+import javax.swing.SwingUtilities;
 
 public class GameClientModel extends Observable {
     public GameClientModel() {
@@ -68,7 +70,8 @@ public class GameClientModel extends Observable {
 
     public void invitePlayer(String opponentName) {
         try {
-            currentServer.SendRequestForGame(playerId, opponentName);
+            inviteeName = opponentName;
+            currentServer.SendRequestForGame(playerId, inviteeName);
         } catch (RemoteException ex) {
             System.out.println(
                 "Error while inviting opponent: " + ex.getMessage());
@@ -79,10 +82,29 @@ public class GameClientModel extends Observable {
 
     }
 
+    public void startGameWithInvitee() {
+        startGameWith(inviteeName);
+    }
+
+    public void handleInvitationRejection() {
+        SwingUtilities.invokeLater(new Runnable() {
+
+            @Override
+            public void run() {
+                JOptionPane.showMessageDialog(null,
+                inviteeName + " rejected your invitation.",
+                "Invitation rejection", JOptionPane.INFORMATION_MESSAGE);
+            }
+        });
+
+    }
+
+
     private final GameServiceClient serviceClient;
     private IGameServer currentServer;
     private IGameClient clientStub;
     private UUID playerId;
     private String playerName;
+    private String inviteeName;
     private String[] otherPlayersNamesList;
 }

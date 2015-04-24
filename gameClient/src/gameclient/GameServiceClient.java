@@ -33,21 +33,26 @@ public class GameServiceClient implements IGameClient {
     @Override
     public boolean OnSentGameRequest(String senderName) throws RemoteException {
         // return accept or decline game
-        boolean didAccept = JOptionPane.showConfirmDialog(null,
+        boolean invitationAccepted = JOptionPane.showConfirmDialog(null,
             senderName + " invited you to play the game. Accept?",
-            "Game invitation", JOptionPane.YES_NO_OPTION) == 0;
+            "Game invitation", JOptionPane.YES_NO_OPTION) ==
+            JOptionPane.YES_OPTION;
 
-        if (didAccept) {
+        if (invitationAccepted) {
             model.startGameWith(senderName);
         }
 
-        return didAccept;
+        return invitationAccepted;
     }
 
     @Override
     public void OnRequestAnswered(boolean isAccepted) throws RemoteException {
         // if accepted start game and wait for move of rival, else say WTF man?
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        if (isAccepted) {
+            model.startGameWithInvitee();
+        } else {
+            model.handleInvitationRejection();
+        }
     }
 
     @Override
