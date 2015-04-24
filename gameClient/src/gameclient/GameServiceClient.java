@@ -1,22 +1,38 @@
 package gameclient;
 
+import gameclient.ui.GameClientModel;
 import gamecore.GameFieldCoordinates;
 import gamecore.GameResult;
 import gamecore.IGameClient;
 import java.rmi.RemoteException;
+import java.util.Arrays;
 
-public class GameClient implements IGameClient {
+public class GameServiceClient implements IGameClient {
+    public GameServiceClient(GameClientModel model) {
+        this.model = model;
+    }
 
     @Override
     public void RefreshPlayersList(String[] players) throws RemoteException {
-        //players contains current client name, so we need to delete it before showing
-        //list to user
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        if (players.length <= 1) {
+            return;
+        }
+
+        String[] otherPlayers = new String[players.length - 1];
+        int otherPlayersCount = 0;
+        for (String playerName : players) {
+            if (!playerName.equals(model.getPlayerName())) {
+                otherPlayers[otherPlayersCount] = playerName;
+                otherPlayersCount += 1;
+            }
+        }
+
+        model.setOtherPlayersNamesList(otherPlayers);
     }
 
     @Override
     public boolean OnSentGameRequest(String senderName) throws RemoteException {
-        
+
         // return accept or decline game
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
@@ -39,5 +55,5 @@ public class GameClient implements IGameClient {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
-    
+    private final GameClientModel model;
 }

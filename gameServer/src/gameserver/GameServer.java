@@ -9,7 +9,7 @@ import java.util.NoSuchElementException;
 import java.util.UUID;
 
 public class GameServer implements IGameServer {
-    
+
     public GameServer()
     {
         playersList = new HashMap<>();
@@ -19,13 +19,13 @@ public class GameServer implements IGameServer {
     @Override
     public UUID RegisterClient(IGameClient clientCallback, String playerName)
             throws RemoteException {
-        
+
         if(playerName != null && clientCallback != null
                 && CheckIsUsernameUnique(playerName))
         {
             Player newPlayer = new Player(UUID.randomUUID(), playerName, clientCallback);
+            playersList.put(newPlayer.getID(), newPlayer);
             BroadcastPlayersList();
-            playersList.put(newPlayer.getID(), newPlayer);   
             return newPlayer.getID();
         }
         else
@@ -37,7 +37,7 @@ public class GameServer implements IGameServer {
         if( playersList.containsKey(playerID))
         {
             Iterator<GomokuGame> i = games.iterator();
-            
+
             while(i.hasNext())
             {
                 GomokuGame game = i.next();
@@ -55,13 +55,13 @@ public class GameServer implements IGameServer {
                         game.getSecondPlayer().getCallback().OnGameFinished(GameResult.RIVAL_LEAVED);
                     }
                     games.remove(game);
-                    
+
                     ChangePlayerBusyStatus(anotherPlayerID);
-                    
+
                     break;
                 }
-            }  
-            
+            }
+
             playersList.remove(playerID);
             BroadcastPlayersList();
         }
@@ -71,7 +71,7 @@ public class GameServer implements IGameServer {
 
     @Override
     public void SendRequestForGame(UUID senderID, String rivalName) throws RemoteException {
-        
+
         if( playersList.containsKey(senderID))
         {
             UUID rivalID = FindPlayerByName(rivalName);
@@ -100,9 +100,9 @@ public class GameServer implements IGameServer {
 
     @Override
     public String[] GetPlayersList(UUID senderID) throws RemoteException {
-        
+
         String[] usernamesArray = new String[playersList.size()];
-        
+
         int i=0;
         for (Player value : playersList.values()) {
            usernamesArray[i] = value.getName();
@@ -113,10 +113,10 @@ public class GameServer implements IGameServer {
 
     @Override
     public void MakeMove(UUID playerID, GameFieldCoordinates coordinates) throws RemoteException {
-        
+
         Iterator<GomokuGame> i = games.iterator();
         boolean isGameFound = false;
-        
+
         while(i.hasNext())
         {
             GomokuGame game = i.next();
@@ -128,8 +128,8 @@ public class GameServer implements IGameServer {
                     game.getSecondPlayer().getCallback().OnRivalMoved(coordinates);
                 else
                     game.getFirstPlayer().getCallback().OnRivalMoved(coordinates);
-                
-                switch(game.CheckGameStatus()) 
+
+                switch(game.CheckGameStatus())
                 {
                     case firstWins:
                         game.getFirstPlayer().getCallback().OnGameFinished(GameResult.WIN);
@@ -153,8 +153,8 @@ public class GameServer implements IGameServer {
         }
         if(!isGameFound)
             throw new NoSuchElementException("Game is not found.");
-    } 
-    
+    }
+
     private boolean CheckIsUsernameUnique(String uName)
     {
         if(FindPlayerByName(uName) == null)
@@ -164,12 +164,12 @@ public class GameServer implements IGameServer {
     }
     private UUID FindPlayerByName(String name)
     {
-        
+
         for (Player value : playersList.values()) {
            if(value.getName().equals(name))
                return value.getID();
         }
-        
+
         return null;
     }
     private void ChangePlayerBusyStatus(UUID playerID)
@@ -186,7 +186,7 @@ public class GameServer implements IGameServer {
         for (Player value : playersList.values())
            value.getCallback().RefreshPlayersList(this.GetPlayersList(null));
     }
-    
+
     private final HashMap<UUID, Player> playersList;
     private final LinkedList<GomokuGame> games;
 }

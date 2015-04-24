@@ -2,6 +2,8 @@ package gameclient.ui;
 
 import javax.swing.JFrame;
 import java.awt.CardLayout;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 
 public class ConnectionFrame extends GameClientView<JFrame> {
     public ConnectionFrame(GameClientController controller) {
@@ -9,6 +11,13 @@ public class ConnectionFrame extends GameClientView<JFrame> {
         setupFrame();
         panes = new CardLayout();
         getComponent().setLayout(panes);
+        getComponent().addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent e) {
+                controller.getModel().disconnectFromServer();
+                System.exit(0);
+            }
+        });
 
         registrationPanel = new RegistrationPanel(getController());
         getComponent().add("RegistrationPanel",
@@ -31,7 +40,6 @@ public class ConnectionFrame extends GameClientView<JFrame> {
 
 
     private void setupFrame() {
-        getComponent().setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         getComponent().setSize(400, 300);
         getComponent().setTitle("Connect to Gomoku server");
     }

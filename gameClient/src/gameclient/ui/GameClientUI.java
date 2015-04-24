@@ -2,8 +2,8 @@ package gameclient.ui;
 
 public class GameClientUI {
 
-    public GameClientUI() {
-        controller = new GameClientController();
+    public GameClientUI(GameClientController controller) {
+        this.controller = controller;
         connectionFrame = new ConnectionFrame(controller);
         controller.setAssociatedView(connectionFrame);
     }
@@ -16,7 +16,10 @@ public class GameClientUI {
         javax.swing.SwingUtilities.invokeLater(new Runnable() {
             @Override
             public void run() {
-                GameClientUI ui = new GameClientUI();
+                GameClientModel model = new GameClientModel();
+                GameClientController controller =
+                    new GameClientController(model);
+                GameClientUI ui = new GameClientUI(controller);
                 ui.showConnectionFrame();
             }
         });
