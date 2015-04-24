@@ -14,6 +14,7 @@ public class GameServer implements IGameServer {
     {
         playersList = new HashMap<>();
         games = new LinkedList<>();
+        activeRequests = new HashMap<>();
     }
 
     @Override
@@ -37,6 +38,16 @@ public class GameServer implements IGameServer {
     public void DropClient(UUID playerID) throws RemoteException {
         if( playersList.containsKey(playerID))
         {
+            for(GameRequest value : activeRequests.values())
+            {
+                if(value.getSender().getID() == playerID ||
+                        value.getReceiver().getID() == playerID)
+                {
+                    activeRequests.remove(value.getReceiver().getID());
+                    break;
+                }
+            }
+            
             Iterator<GomokuGame> i = games.iterator();
             
             while(i.hasNext())
@@ -84,8 +95,10 @@ public class GameServer implements IGameServer {
                     sender.getCallback().OnRequestAnswered(false);
                 else
                 {
-                    boolean answer = rival.getCallback().OnSentGameRequest(sender.getName());
-                    sender.getCallback().OnRequestAnswered(answer);
+                    //boolean answer = rival.getCallback().OnSentGameRequest(sender.getName());
+                    rival.getCallback().OnSentGameRequest(sender.getName());
+                    activeRequests.put(rivalID, new GameRequest(sender, rival));
+                    /*sender.getCallback().OnRequestAnswered(answer);
                     if(answer == true)
                     {
                         //sender.isBusy = rival.isBusy = true;
@@ -96,6 +109,7 @@ public class GameServer implements IGameServer {
                         System.out.println("\nGame started. Players: " + 
                                 sender.getName() + " and " + rivalName);
                     }
+                            */
                 }
             }
         }
@@ -114,6 +128,31 @@ public class GameServer implements IGameServer {
            i++;
         }
         return usernamesArray;
+    }
+    
+    @Override
+    public void AnswerGameRequest(UUID receiverID, boolean answer) throws RemoteException {
+        
+        GameRequest answeredRequest = activeRequests.get(receiverID);
+        if(answeredRequest != null)
+        {
+            answeredRequest.getSender().getCallback().OnRequestAnswered(answer);
+            if(answer)
+            {
+                ChangePlayerBusyStatus(answeredRequest.getSender().getID());
+                ChangePlayerBusyStatus(answeredRequest.getReceiver().getID());
+                GomokuGame newGame = new GomokuGame(answeredRequest.getSender(),
+                        answeredRequest.getReceiver());
+                games.add(newGame);
+                System.out.println("\nGame started. Players: " + 
+                                answeredRequest.getSender().getName() + " and "
+                        + answeredRequest.getReceiver());
+            }
+            activeRequests.remove(receiverID);
+        }
+        else
+            throw new NoSuchElementException("GameRequest is not found,"
+                    + " probably sender leaved game.");
     }
 
     @Override
@@ -196,6 +235,8 @@ public class GameServer implements IGameServer {
            value.getCallback().RefreshPlayersList(this.GetPlayersList(null));
     }
     
+    private final HashMap<UUID, GameRequest> activeRequests;
     private final HashMap<UUID, Player> playersList;
     private final LinkedList<GomokuGame> games;
+
 }
