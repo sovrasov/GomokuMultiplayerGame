@@ -24,8 +24,8 @@ public class GameServer implements IGameServer {
                 && CheckIsUsernameUnique(playerName))
         {
             Player newPlayer = new Player(UUID.randomUUID(), playerName, clientCallback);
-            BroadcastPlayersList();
             playersList.put(newPlayer.getID(), newPlayer);
+            BroadcastPlayersList();
             System.out.println("\nPlayer joined: " + playerName);
             return newPlayer.getID();
         }
