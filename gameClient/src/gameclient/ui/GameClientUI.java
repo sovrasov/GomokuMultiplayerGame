@@ -19,6 +19,7 @@ public class GameClientUI {
                 GameClientModel model = new GameClientModel();
                 GameClientController controller =
                     new GameClientController(model);
+                model.setController(controller);
                 GameClientUI ui = new GameClientUI(controller);
                 ui.showConnectionFrame();
             }

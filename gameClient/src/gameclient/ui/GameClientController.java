@@ -20,6 +20,10 @@ public class GameClientController {
         return model;
     }
 
+    public void switchToGameRoundPanel() {
+        mainView.switchPanel("GameRoundPanel");
+    }
+
     public class LoginListener implements ActionListener {
         public LoginListener(RegistrationPanel panel) {
             this.registrationPanel = panel;

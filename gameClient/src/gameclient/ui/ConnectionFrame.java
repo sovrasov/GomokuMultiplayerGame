@@ -28,6 +28,9 @@ public class ConnectionFrame extends GameClientView<JFrame> {
 
         invitationPanel = new InvitationPanel(getController());
         getComponent().add("InvitationPanel", invitationPanel.getComponent());
+
+        gameRoundPanel = new GameRoundPanel(getController());
+        getComponent().add("GameRoundPanel", gameRoundPanel.getComponent());
     }
 
     public void show() {
@@ -48,4 +51,5 @@ public class ConnectionFrame extends GameClientView<JFrame> {
     private final RegistrationPanel registrationPanel;
     private final LobbyPanel lobbyPanel;
     private final InvitationPanel invitationPanel;
+    private final GameRoundPanel gameRoundPanel;
 }

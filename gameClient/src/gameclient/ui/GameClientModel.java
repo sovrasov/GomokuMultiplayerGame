@@ -16,10 +16,16 @@ import javax.swing.SwingUtilities;
 
 public class GameClientModel extends Observable {
     public GameClientModel() {
+        controller = null;
+
         serviceClient = new GameServiceClient(this);
         playerId = null;
         playerName = null;
         otherPlayersNamesList = new String[0];
+    }
+
+    public void setController(GameClientController controller) {
+        this.controller = controller;
     }
 
     public void connectToServer(String playerName) {
@@ -79,7 +85,7 @@ public class GameClientModel extends Observable {
     }
 
     public void startGameWith(String opponent) {
-
+        controller.switchToGameRoundPanel();
     }
 
     public void startGameWithInvitee() {
@@ -99,6 +105,8 @@ public class GameClientModel extends Observable {
 
     }
 
+
+    private GameClientController controller;
 
     private final GameServiceClient serviceClient;
     private IGameServer currentServer;
