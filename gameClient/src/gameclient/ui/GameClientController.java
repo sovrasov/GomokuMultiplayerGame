@@ -28,6 +28,10 @@ public class GameClientController {
         model.setPlaceholderPiece(xPiece, yPiece);
     }
 
+    public void switchToResultPanel() {
+        mainView.switchPanel("GameFinishedPanel");
+    }
+
     public class LoginListener implements ActionListener {
         public LoginListener(RegistrationPanel panel) {
             this.registrationPanel = panel;
@@ -82,6 +86,15 @@ public class GameClientController {
         @Override
         public void actionPerformed(ActionEvent ae) {
             model.makeAMove();
+        }
+    }
+
+    public class GoToLobbyListener implements ActionListener {
+
+        @Override
+        public void actionPerformed(ActionEvent ae) {
+            mainView.switchPanel("LobbyPanel");
+            model.updateOpponentsList();
         }
     }
 

@@ -31,6 +31,9 @@ public class ConnectionFrame extends GameClientView<JFrame> {
 
         gameRoundPanel = new GameRoundPanel(getController());
         getComponent().add("GameRoundPanel", gameRoundPanel.getComponent());
+
+        gameFinishedPanel = new GameFinishedPanel(getController());
+        getComponent().add("GameFinishedPanel", gameFinishedPanel.getComponent());
     }
 
     public void show() {
@@ -52,4 +55,5 @@ public class ConnectionFrame extends GameClientView<JFrame> {
     private final LobbyPanel lobbyPanel;
     private final InvitationPanel invitationPanel;
     private final GameRoundPanel gameRoundPanel;
+    private final GameFinishedPanel gameFinishedPanel;
 }

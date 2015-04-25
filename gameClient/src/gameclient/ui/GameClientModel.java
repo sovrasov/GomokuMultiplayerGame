@@ -2,6 +2,7 @@ package gameclient.ui;
 
 import gameclient.GameServiceClient;
 import gamecore.GameFieldCoordinates;
+import gamecore.GameResult;
 import gamecore.GlobalConstants;
 import gamecore.IGameClient;
 import gamecore.IGameServer;
@@ -14,6 +15,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Observable;
 import java.util.UUID;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 
@@ -26,9 +29,15 @@ public class GameClientModel extends Observable {
         playerName = null;
         otherPlayersNamesList = new String[0];
 
-        myTurn = false;
         myPieces = new ArrayList<>();
         opponentsPieces = new ArrayList<>();
+        resetGameState();
+    }
+
+    public final void resetGameState() {
+        myTurn = false;
+        myPieces.clear();
+        opponentsPieces.clear();
         placeholderPiece = null;
         myColor = PieceColor.BLACK;
         opponentsColor = PieceColor.WHITE;
@@ -187,6 +196,41 @@ public class GameClientModel extends Observable {
         notifyObservers();
     }
 
+    public void finishGame(GameResult result) {
+        this.result = result;
+        resetGameState();
+        controller.switchToResultPanel();
+
+        setChanged();
+        notifyObservers();
+    }
+
+    public GameResult getLastGameResult() {
+        return result;
+    }
+
+    public void updateOpponentsList() {
+        try {
+            setOtherPlayersNamesList(filterOtherPlayers(
+                currentServer.GetPlayersList(playerId)));
+        } catch (RemoteException ex) {
+            System.out.println("Couldn't load players list.");
+        }
+    }
+
+    public String[] filterOtherPlayers(String[] players) {
+        String[] otherPlayers = new String[players.length - 1];
+        int otherPlayersCount = 0;
+        for (String playerName : players) {
+            if (!playerName.equals(getPlayerName())) {
+                otherPlayers[otherPlayersCount] = playerName;
+                otherPlayersCount += 1;
+            }
+        }
+
+        return otherPlayers;
+    }
+
 
     private GameClientController controller;
 
@@ -204,4 +248,5 @@ public class GameClientModel extends Observable {
     private Piece placeholderPiece;
     private PieceColor myColor;
     private PieceColor opponentsColor;
+    private GameResult result;
 }

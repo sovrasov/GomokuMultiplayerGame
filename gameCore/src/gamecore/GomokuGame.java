@@ -39,7 +39,7 @@ public class GomokuGame {
     public GameStatus CheckGameStatus()
     {
         if(field.CheckForWin(lastMove))
-            if(isFirstMovesNow)
+            if(!isFirstMovesNow)
                 return GameStatus.firstWins;
             else
                 return GameStatus.secondWins;

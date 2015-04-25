@@ -14,18 +14,7 @@ public class GameServiceClient implements IGameClient {
 
     @Override
     public void RefreshPlayersList(String[] players) throws RemoteException {
-        if (players.length <= 1) {
-            return;
-        }
-
-        String[] otherPlayers = new String[players.length - 1];
-        int otherPlayersCount = 0;
-        for (String playerName : players) {
-            if (!playerName.equals(model.getPlayerName())) {
-                otherPlayers[otherPlayersCount] = playerName;
-                otherPlayersCount += 1;
-            }
-        }
+        String[] otherPlayers = model.filterOtherPlayers(players);
 
         model.setOtherPlayersNamesList(otherPlayers);
     }
@@ -58,7 +47,7 @@ public class GameServiceClient implements IGameClient {
     @Override
     public void OnGameFinished(GameResult result) throws RemoteException {
         //finish game, show result
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        model.finishGame(result);
     }
 
     @Override
