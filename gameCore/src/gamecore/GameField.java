@@ -35,8 +35,8 @@ public class GameField {
         int jLowerBound = CoreUtils.imax(0, coordinates.getY() - 2);
         int jUpperBound = CoreUtils.imin(14, coordinates.getY() + 2);
 
-        for(int i = iLowerBound; i < iUpperBound; i++)
-            for(int j = jLowerBound; j < jUpperBound; j++)
+        for(int i = iLowerBound; i <= iUpperBound; i++)
+            for(int j = jLowerBound; j <= jUpperBound; j++)
                 if(CheckDiagonals(i, j) || CheckHorozintal(i, j)
                         || CheckVertical(i, j))
                     return true;

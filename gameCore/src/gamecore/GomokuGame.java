@@ -21,13 +21,13 @@ public class GomokuGame {
 
     public int MakeMove(GameFieldCoordinates coordinates, UUID playerID)
     {
-        if(isFirstMovesNow == true && playerID.equals(firstPlayer.getID()))
+        if(isFirstMovesNow && playerID.equals(firstPlayer.getID()))
         {
             isFirstMovesNow = false;
             lastMove = coordinates;
             return field.SetFieldElement(coordinates, FieldElemType.Black);
         }
-        else if(isFirstMovesNow != true && playerID == secondPlayer.getID())
+        else if(!isFirstMovesNow && playerID.equals(secondPlayer.getID()))
         {
             isFirstMovesNow = true;
             lastMove = coordinates;
