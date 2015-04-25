@@ -10,7 +10,7 @@ public class GameField {
     {
         field = new char[GlobalConstants.fieldSize][GlobalConstants.fieldSize];
     }
-    
+
     public int SetFieldElement(GameFieldCoordinates coordinates, FieldElemType value)
     {
         if(field[coordinates.getX()][coordinates.getY()] == 0)
@@ -26,15 +26,15 @@ public class GameField {
         else
             return -1;
     }
-    
-    public boolean CheckForWin(GameFieldCoordinates coordinates) 
+
+    public boolean CheckForWin(GameFieldCoordinates coordinates)
     {
-        int iLowerBound = CoreUtils.imax(0, coordinates.getX() - 4);
-        int iUpperBound = CoreUtils.imin(15, coordinates.getX() + 4);
-        
-        int jLowerBound = CoreUtils.imax(0, coordinates.getY() - 4);
-        int jUpperBound = CoreUtils.imin(15, coordinates.getY() + 4);
-        
+        int iLowerBound = CoreUtils.imax(0, coordinates.getX() - 2);
+        int iUpperBound = CoreUtils.imin(14, coordinates.getX() + 2);
+
+        int jLowerBound = CoreUtils.imax(0, coordinates.getY() - 2);
+        int jUpperBound = CoreUtils.imin(14, coordinates.getY() + 2);
+
         for(int i = iLowerBound; i < iUpperBound; i++)
             for(int j = jLowerBound; j < jUpperBound; j++)
                 if(CheckDiagonals(i, j) || CheckHorozintal(i, j)
@@ -42,7 +42,7 @@ public class GameField {
                     return true;
         return false;
     }
-    
+
     FieldElemType GetFieldElement(GameFieldCoordinates coordinates)
     {
         char fieldElemValue = field[coordinates.getX()][coordinates.getY()];
@@ -63,7 +63,7 @@ public class GameField {
         }
         return elemType;
     }
-    
+
     private boolean CheckHorozintal(int i, int j)
     {
         if( i > 1 && i < 13 && field[i][j] != 0)
@@ -76,7 +76,7 @@ public class GameField {
                 return false;
         }
         else
-            return true;
+            return false;
     }
     private boolean CheckVertical(int i, int j)
     {
@@ -109,6 +109,6 @@ public class GameField {
         else
             return false;
     }
-    
+
     private final char field[][];
 }

@@ -18,10 +18,10 @@ public class GomokuGame {
         field = null;
         lastMove = null;
     }
-    
+
     public int MakeMove(GameFieldCoordinates coordinates, UUID playerID)
     {
-        if(isFirstMovesNow == true && playerID == firstPlayer.getID())
+        if(isFirstMovesNow == true && playerID.equals(firstPlayer.getID()))
         {
             isFirstMovesNow = false;
             lastMove = coordinates;
@@ -35,18 +35,18 @@ public class GomokuGame {
         }
         return -1;
     }
-    
+
     public GameStatus CheckGameStatus()
     {
         if(field.CheckForWin(lastMove))
-            if(!isFirstMovesNow)
+            if(isFirstMovesNow)
                 return GameStatus.firstWins;
             else
                 return GameStatus.secondWins;
         else
             return GameStatus.inProcess;
     }
-    
+
     public Player getFirstPlayer() {
         return firstPlayer;
     }
@@ -54,15 +54,16 @@ public class GomokuGame {
     public Player getSecondPlayer() {
         return secondPlayer;
     }
-    
+
     public boolean hasPlayer(UUID playerID)
     {
-        if(firstPlayer.getID() == playerID || secondPlayer.getID() == playerID)
+        if(firstPlayer.getID().equals(playerID) ||
+            secondPlayer.getID().equals(playerID))
             return true;
         else
             return false;
     }
-    
+
     boolean isFirstMovesNow;
     GameFieldCoordinates lastMove;
     private GameField field;

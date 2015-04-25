@@ -81,7 +81,7 @@ public class GameClientController {
 
         @Override
         public void actionPerformed(ActionEvent ae) {
-
+            model.makeAMove();
         }
     }
 

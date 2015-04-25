@@ -44,7 +44,7 @@ public class GameServer implements IGameServer {
                 if(game.hasPlayer(playerID))
                 {
                     UUID anotherPlayerID;
-                    if(game.getFirstPlayer().getID() != playerID)
+                    if(!game.getFirstPlayer().getID().equals(playerID))
                     {
                         anotherPlayerID = game.getFirstPlayer().getID();
                         game.getFirstPlayer().getCallback().OnGameFinished(GameResult.RIVAL_LEAVED);
@@ -124,7 +124,7 @@ public class GameServer implements IGameServer {
             {
                 isGameFound = true;
                 game.MakeMove(coordinates, playerID);
-                if(game.getFirstPlayer().getID() == playerID)
+                if(game.getFirstPlayer().getID().equals(playerID))
                     game.getSecondPlayer().getCallback().OnRivalMoved(coordinates);
                 else
                     game.getFirstPlayer().getCallback().OnRivalMoved(coordinates);

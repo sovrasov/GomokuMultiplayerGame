@@ -64,7 +64,8 @@ public class GameServiceClient implements IGameClient {
     @Override
     public void OnRivalMoved(GameFieldCoordinates coordinates) throws RemoteException {
         //visualize rival's move, enable user to move
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        model.addOpponentsPiece(coordinates);
+        model.transferTurn();
     }
 
     private final GameClientModel model;

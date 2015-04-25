@@ -1,6 +1,7 @@
 package gameclient.ui;
 
 import gameclient.GameServiceClient;
+import gamecore.GameFieldCoordinates;
 import gamecore.GlobalConstants;
 import gamecore.IGameClient;
 import gamecore.IGameServer;
@@ -29,6 +30,8 @@ public class GameClientModel extends Observable {
         myPieces = new ArrayList<>();
         opponentsPieces = new ArrayList<>();
         placeholderPiece = null;
+        myColor = PieceColor.BLACK;
+        opponentsColor = PieceColor.WHITE;
     }
 
     public void setController(GameClientController controller) {
@@ -99,6 +102,8 @@ public class GameClientModel extends Observable {
 
     public void startGameWithInvitee() {
         myTurn = true;
+        myColor = PieceColor.WHITE;
+        opponentsColor = PieceColor.BLACK;
         startGameWith(inviteeName);
     }
 
@@ -151,6 +156,37 @@ public class GameClientModel extends Observable {
         notifyObservers();
     }
 
+    public void makeAMove() {
+        if (placeholderPiece == null) {
+            return;
+        }
+
+        myPieces.add(new Piece(placeholderPiece.getX(), placeholderPiece.getY(),
+            myColor));
+        try {
+            currentServer.MakeMove(playerId,
+                new GameFieldCoordinates(placeholderPiece.getX(),
+                placeholderPiece.getY()));
+        } catch (RemoteException ex) {
+            System.err.println("Couldn't make a move: " + ex.getMessage());
+        }
+        placeholderPiece = null;
+        myTurn = false;
+        setChanged();
+        notifyObservers();
+    }
+
+    public void addOpponentsPiece(GameFieldCoordinates coordinates) {
+        opponentsPieces.add(new Piece(coordinates.getX(), coordinates.getY(),
+            opponentsColor));
+    }
+
+    public void transferTurn() {
+        myTurn = true;
+        setChanged();
+        notifyObservers();
+    }
+
 
     private GameClientController controller;
 
@@ -166,4 +202,6 @@ public class GameClientModel extends Observable {
     private final ArrayList<Piece> myPieces;
     private final ArrayList<Piece> opponentsPieces;
     private Piece placeholderPiece;
+    private PieceColor myColor;
+    private PieceColor opponentsColor;
 }
