@@ -37,6 +37,8 @@ public class GameRoundPanel extends GameClientView<JPanel> implements Observer {
             turnLabel.setText(opponentsTurnMessage);
             makeAMoveButton.setEnabled(false);
         }
+
+        gameField.repaint();
     }
 
 

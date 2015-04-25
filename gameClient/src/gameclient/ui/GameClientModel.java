@@ -9,6 +9,8 @@ import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Observable;
 import java.util.UUID;
 import javax.swing.JOptionPane;
@@ -22,7 +24,11 @@ public class GameClientModel extends Observable {
         playerId = null;
         playerName = null;
         otherPlayersNamesList = new String[0];
+
         myTurn = false;
+        myPieces = new ArrayList<>();
+        opponentsPieces = new ArrayList<>();
+        placeholderPiece = null;
     }
 
     public void setController(GameClientController controller) {
@@ -113,6 +119,38 @@ public class GameClientModel extends Observable {
         return myTurn;
     }
 
+    public List<Piece> getMyPieces() {
+        return myPieces;
+    }
+
+    public List<Piece> getOpponentsPieces() {
+        return opponentsPieces;
+    }
+
+    public Piece getPlaceholderPiece() {
+        return placeholderPiece;
+    }
+
+    public void setPlaceholderPiece(int x, int y) {
+        Piece newPlaceholder = new Piece(x, y, PieceColor.RED);
+
+        for (Piece piece : myPieces) {
+            if (piece.inTheSamePlaceWith(newPlaceholder)) {
+                return;
+            }
+        }
+
+        for (Piece piece : opponentsPieces) {
+            if (piece.inTheSamePlaceWith(newPlaceholder)) {
+                return;
+            }
+        }
+
+        placeholderPiece = newPlaceholder;
+        setChanged();
+        notifyObservers();
+    }
+
 
     private GameClientController controller;
 
@@ -125,4 +163,7 @@ public class GameClientModel extends Observable {
     private String[] otherPlayersNamesList;
 
     private boolean myTurn;
+    private final ArrayList<Piece> myPieces;
+    private final ArrayList<Piece> opponentsPieces;
+    private Piece placeholderPiece;
 }

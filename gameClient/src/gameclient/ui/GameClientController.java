@@ -24,6 +24,10 @@ public class GameClientController {
         mainView.switchPanel("GameRoundPanel");
     }
 
+    public void tryToPutPlaceholderPiece(int xPiece, int yPiece) {
+        model.setPlaceholderPiece(xPiece, yPiece);
+    }
+
     public class LoginListener implements ActionListener {
         public LoginListener(RegistrationPanel panel) {
             this.registrationPanel = panel;
@@ -77,7 +81,7 @@ public class GameClientController {
 
         @Override
         public void actionPerformed(ActionEvent ae) {
-            
+
         }
     }
 
