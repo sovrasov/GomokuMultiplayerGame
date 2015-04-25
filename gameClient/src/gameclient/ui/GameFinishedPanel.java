@@ -1,9 +1,10 @@
 package gameclient.ui;
 
 import gamecore.GameResult;
+import java.awt.GridBagLayout;
 import java.util.Observable;
 import java.util.Observer;
-import javax.swing.BoxLayout;
+import javax.swing.GroupLayout;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -15,15 +16,29 @@ public class GameFinishedPanel extends GameClientView<JPanel>
         super(new JPanel(), controller);
         controller.getModel().addObserver(this);
 
-        getComponent().setLayout(new BoxLayout(getComponent(),
-            BoxLayout.Y_AXIS));
+        getComponent().setLayout(new GridBagLayout());
+
+        JPanel controls = new JPanel();
+        GroupLayout layout = new GroupLayout(controls);
+        controls.setLayout(layout);
 
         resultLabel = new JLabel();
         toLobbyButton = new JButton("Back to lobby");
         toLobbyButton.addActionListener(controller.new GoToLobbyListener());
 
-        getComponent().add(resultLabel);
-        getComponent().add(toLobbyButton);
+        layout.setHorizontalGroup(
+            layout.createParallelGroup(GroupLayout.Alignment.CENTER)
+            .addComponent(resultLabel)
+            .addComponent(toLobbyButton)
+        );
+
+        layout.setVerticalGroup(
+            layout.createSequentialGroup()
+            .addComponent(resultLabel)
+            .addComponent(toLobbyButton)
+        );
+
+        getComponent().add(controls);
     }
 
     @Override

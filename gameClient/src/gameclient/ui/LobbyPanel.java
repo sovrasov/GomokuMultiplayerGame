@@ -1,10 +1,12 @@
 package gameclient.ui;
 
+import java.awt.GridBagLayout;
+import javax.swing.GroupLayout;
 import java.util.Observable;
 import java.util.Observer;
-import javax.swing.BoxLayout;
 import javax.swing.DefaultListModel;
 import javax.swing.JButton;
+import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -15,22 +17,43 @@ public class LobbyPanel extends GameClientView<JPanel> implements Observer {
     public LobbyPanel(GameClientController controller) {
         super(new JPanel(), controller);
         controller.getModel().addObserver(this);
-
         getComponent().setLayout(
-            new BoxLayout(getComponent(), BoxLayout.Y_AXIS));
+            new GridBagLayout());
 
+        JPanel controls = new JPanel();
+        GroupLayout layout = new GroupLayout(controls);
+        controls.setLayout(layout);
+
+        JLabel opponentsListLabel = new JLabel("Available players:");
         opponentsListModel = new DefaultListModel();
         opponentsList = new JList(opponentsListModel);
         opponentsList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         opponentsList.setLayoutOrientation(JList.VERTICAL);
-        opponentsList.setVisibleRowCount(-1);
+        opponentsList.setVisibleRowCount(7);
+        JScrollPane opponentsListScrollPane = new JScrollPane(opponentsList);
 
         inviteButton = new JButton("Invite");
         inviteButton.addActionListener(
             controller.new InvitePlayerListener(this));
 
-        getComponent().add(new JScrollPane(opponentsList));
-        getComponent().add(inviteButton);
+        layout.setAutoCreateGaps(true);
+        layout.setAutoCreateContainerGaps(true);
+
+        layout.setHorizontalGroup(
+            layout.createParallelGroup(GroupLayout.Alignment.CENTER)
+            .addComponent(opponentsListLabel)
+            .addComponent(opponentsListScrollPane)
+            .addComponent(inviteButton)
+        );
+
+        layout.setVerticalGroup(
+            layout.createSequentialGroup()
+            .addComponent(opponentsListLabel)
+            .addComponent(opponentsListScrollPane)
+            .addComponent(inviteButton)
+        );
+
+        getComponent().add(controls);
     }
 
     public String getSelectedOpponentsName() {

@@ -15,8 +15,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Observable;
 import java.util.UUID;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 
@@ -68,7 +66,9 @@ public class GameClientModel extends Observable {
 
     public void disconnectFromServer() {
         try {
-            currentServer.DropClient(playerId);
+            if (currentServer != null) {
+                currentServer.DropClient(playerId);
+            }
         } catch (RemoteException ex) {
             System.out.println("Problem with disconnection: " +
                 ex.getMessage());
@@ -77,6 +77,10 @@ public class GameClientModel extends Observable {
 
     public String getPlayerName() {
         return playerName;
+    }
+
+    public PieceColor getPlayerColor() {
+        return myColor;
     }
 
     public boolean isCurrentlyLoggedIn() {
