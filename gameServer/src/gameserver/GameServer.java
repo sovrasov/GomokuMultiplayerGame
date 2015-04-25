@@ -148,8 +148,8 @@ public class GameServer implements IGameServer {
                     case inProcess:
                         break;
                 }
+                break;
             }
-            break;
         }
         if(!isGameFound)
             throw new NoSuchElementException("Game is not found.");
